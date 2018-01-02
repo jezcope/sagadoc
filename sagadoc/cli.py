@@ -3,13 +3,12 @@
 """Console script for sagadoc."""
 
 import click
-import jinja2
+from mako.lookup import TemplateLookup
 from ruamel.yaml import YAML
 # from pprint import pprint as pp
 
-env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader('./templates'),
-)
+lookup = TemplateLookup(directories=['./templates'],
+                        input_encoding='utf-8')
 
 
 @click.group()
@@ -19,13 +18,16 @@ def main(args=None):
 
 
 @main.command()
-def build():
+@click.option('--output', '-O',
+              type=click.File('w'),
+              default='-')
+def build(output):
     yaml = YAML()
     with open('cv.yaml') as infile:
         cv_data = yaml.load(infile)
-    template = env.get_template('cv-full.tex')
-    output = template.render(cv_data)
-    click.echo(output)
+    template = lookup.get_template('/cv-full.tex')
+    rendered = template.render_unicode(**cv_data)
+    output.write(rendered)
 
 
 if __name__ == "__main__":

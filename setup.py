@@ -14,17 +14,15 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'Click>=6.0',
     'ruamel.yaml<=0.15',
-    'jinja2>=2.10',
+    'mako>=1.0',
 ]
 
 setup_requirements = [
     'pytest-runner',
-    # TODO(jezcope): put setup requirements (distutils extensions, etc.) here
 ]
 
 test_requirements = [
     'pytest',
-    # TODO: put package test requirements here
 ]
 
 setup(
@@ -38,7 +36,7 @@ setup(
     packages=find_packages(include=['sagadoc']),
     entry_points={
         'console_scripts': [
-            'sagadoc=sagadoc.cli:main'
+            'saga=sagadoc.cli:main'
         ]
     },
     include_package_data=True,
