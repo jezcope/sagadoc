@@ -3,14 +3,9 @@
 """Console script for sagadoc."""
 
 import click
-from mako.lookup import TemplateLookup
-from ruamel.yaml import YAML
 from pprint import pformat
 
 from sagadoc import DocumentBuilder
-
-lookup = TemplateLookup(directories=['./templates'],
-                        input_encoding='utf-8')
 
 
 @click.group()
