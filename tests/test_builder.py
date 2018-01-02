@@ -23,6 +23,13 @@ def test_add_data_source_nonexistent(docbuilder):
         docbuilder.add_data_source('does-not-exist.yaml')
 
 
+def test_make_context(docbuilder):
+    docbuilder.add_data_source('fixtures/simple-data.yaml')
+    context = docbuilder.make_context()
+    assert 'foo' in context
+    assert context['foo'] == 'bar'
+
+
 def test_build_no_logic(docbuilder, strbuf):
     docbuilder.build('fixtures/no-logic.tmpl', strbuf)
     assert 'Build successful!' in strbuf.getvalue()

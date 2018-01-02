@@ -21,6 +21,12 @@ def test_help(runner):
     assert '--help  Show this message and exit.' in help_result.output
 
 
+def test_dump(runner):
+    dump_result = runner.invoke(cli.dump, ['-d', 'tests/fixtures/simple-data.yaml'])
+    assert dump_result.exit_code == 0, dump_result.output
+    assert "'foo': 'bar'" in dump_result.output
+
+
 def test_build(runner):
     build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/no-logic.tmpl'])
     assert build_result.exit_code == 0, build_result.output

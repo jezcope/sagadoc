@@ -5,6 +5,7 @@
 import click
 from mako.lookup import TemplateLookup
 from ruamel.yaml import YAML
+from pprint import pformat
 
 from sagadoc import DocumentBuilder
 
@@ -32,6 +33,21 @@ def build(output, template, data):
     for source in data:
         builder.add_data_source(source)
     builder.build(template, output)
+
+
+@main.command()
+@click.option('--output', '-O',
+              type=click.File('w'),
+              default='-')
+@click.option('--data', '-d',
+              type=click.Path(exists=True),
+              multiple=True)
+def dump(output, data):
+    builder = DocumentBuilder()
+    for source in data:
+        builder.add_data_source(source)
+    context = builder.make_context()
+    output.write(pformat(context))
 
 
 if __name__ == "__main__":

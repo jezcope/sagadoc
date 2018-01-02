@@ -22,7 +22,7 @@ class DocumentBuilder:
         filename = (self.home / filename).resolve(strict=True)
         self.data_sources.append(filename)
 
-    def _make_context(self):
+    def make_context(self):
         yaml = YAML()
         context = {}
         for source in self.data_sources:
@@ -32,7 +32,7 @@ class DocumentBuilder:
         return context
 
     def build(self, template_name, output):
-        context = self._make_context()
+        context = self.make_context()
         template = self.template_lookup.get_template(template_name)
         rendered = template.render_unicode(**context)
         output.write(rendered)
