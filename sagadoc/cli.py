@@ -24,11 +24,16 @@ def main(args=None):
               multiple=True)
 @click.option('--template', '-t',
               type=click.Path(exists=True))
+@click.option('--script', '-s',
+              type=click.Path(exists=True),
+              multiple=True)
 @click.pass_context
-def build(ctx, output, template, data):
+def build(ctx, output, template, data, script):
     builder = DocumentBuilder()
-    for source in data:
-        builder.add_data_source(source)
+    for s in data:
+        builder.add_data_source(s)
+    for s in script:
+        builder.add_script(s)
     try:
         builder.build(template, output)
     except Exception:
@@ -49,10 +54,15 @@ def build(ctx, output, template, data):
 @click.option('--data', '-d',
               type=click.Path(exists=True),
               multiple=True)
-def dump(output, data):
+@click.option('--script', '-s',
+              type=click.Path(exists=True),
+              multiple=True)
+def dump(output, data, script):
     builder = DocumentBuilder()
-    for source in data:
-        builder.add_data_source(source)
+    for s in data:
+        builder.add_data_source(s)
+    for s in script:
+        builder.add_script(s)
     context = builder.make_context()
     output.write(pformat(context))
 

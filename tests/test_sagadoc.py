@@ -22,26 +22,38 @@ def test_help(runner):
 
 
 def test_dump(runner):
-    dump_result = runner.invoke(cli.dump, ['-d', 'tests/fixtures/simple-data.yaml'])
+    dump_result = runner.invoke(cli.dump,
+                                ['-d', 'tests/fixtures/simple-data.yaml'])
     assert dump_result.exit_code == 0, dump_result.output
     assert "'foo': 'bar'" in dump_result.output
 
 
 def test_build(runner):
-    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/no-logic.tmpl'])
+    build_result = runner.invoke(cli.build,
+                                 ['-t', 'tests/fixtures/no-logic.tmpl'])
     assert build_result.exit_code == 0, build_result.output
     assert 'Build successful!' in build_result.output
 
 
 def test_build_with_data(runner):
-    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/simple-data.tmpl',
-                                             '-d', 'tests/fixtures/simple-data.yaml'])
+    build_result = runner.invoke(cli.build,
+                                 ['-t', 'tests/fixtures/simple-data.tmpl',
+                                  '-d', 'tests/fixtures/simple-data.yaml'])
     assert build_result.exit_code == 0, build_result.output
     assert 'Value of "foo" is: bar' in build_result.output
 
 
 def test_build_with_missing_data(runner):
-    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/simple-data.tmpl'])
+    build_result = runner.invoke(cli.build,
+                                 ['-t', 'tests/fixtures/simple-data.tmpl'])
     assert build_result.exit_code != 0, build_result.output
     assert 'Error occurred while rendering template' in build_result.output
     assert 'Traceback' in build_result.output
+
+
+def test_build_with_script(runner):
+    build_result = runner.invoke(cli.build,
+                                 ['-t', 'tests/fixtures/simple-script.tmpl',
+                                  '-s', 'tests/fixtures/simple-script.py'])
+    assert build_result.exit_code == 0, build_result.output
+    assert 'Hello from Python' in build_result.output
