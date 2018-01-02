@@ -1,38 +1,34 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `sagadoc` package."""
+"""Tests for `saga` command line tool."""
 
 import pytest
 
 from click.testing import CliRunner
 
-from sagadoc import sagadoc
 from sagadoc import cli
 
 
 @pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
+def runner():
+    return CliRunner()
 
 
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
-
-
-def test_command_line_interface():
-    """Test the CLI."""
-    runner = CliRunner()
-    result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert 'sagadoc.cli.main' in result.output
+def test_help(runner):
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output
+
+
+def test_build(runner):
+    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/no-logic.tmpl'])
+    assert build_result.exit_code == 0, build_result.output
+    assert 'Build successful!' in build_result.output
+
+
+def test_build_with_data(runner):
+    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/simple-data.tmpl',
+                                             '-d', 'tests/fixtures/simple-data.yaml'])
+    assert build_result.exit_code == 0, build_result.output
+    assert 'Value of "foo" is: bar' in build_result.output
