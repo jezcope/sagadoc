@@ -38,3 +38,10 @@ def test_build_with_data(runner):
                                              '-d', 'tests/fixtures/simple-data.yaml'])
     assert build_result.exit_code == 0, build_result.output
     assert 'Value of "foo" is: bar' in build_result.output
+
+
+def test_build_with_missing_data(runner):
+    build_result = runner.invoke(cli.build, ['-t', 'tests/fixtures/simple-data.tmpl'])
+    assert build_result.exit_code != 0, build_result.output
+    assert 'Error occurred while rendering template' in build_result.output
+    assert 'Traceback' in build_result.output

@@ -3,6 +3,7 @@
 """Console script for sagadoc."""
 
 import click
+from traceback import format_exc
 from pprint import pformat
 
 from sagadoc import DocumentBuilder
@@ -23,11 +24,22 @@ def main(args=None):
               multiple=True)
 @click.option('--template', '-t',
               type=click.Path(exists=True))
-def build(output, template, data):
+@click.pass_context
+def build(ctx, output, template, data):
     builder = DocumentBuilder()
     for source in data:
         builder.add_data_source(source)
-    builder.build(template, output)
+    try:
+        builder.build(template, output)
+    except Exception:
+        click.echo(click.style('Error occurred while rendering template:',
+                               fg='red'))
+        click.echo('='*78)
+        click.echo(format_exc())
+        click.echo(click.style('Aborting',
+                               fg='red'))
+        click.echo('='*78)
+        ctx.exit(1)
 
 
 @main.command()
